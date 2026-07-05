@@ -1,97 +1,87 @@
-const LYRICS = [
- {text: "I text a postcard sent to you", delay: 1500},
-  {text: "Did it go through?", delay: 2400},
-  {text: "Sendin' all my love to you", delay: 5400},
-  {text: "You are the moonlight of my life", delay: 1200},
-  {text: "Every night", delay: 3000},
-  {text: "Givin' all my love to you", delay: 5450},
-  {text: "My beatin' heart belongs to you", delay: 4700},
-  {text: "I walked for miles 'til I found you", delay: 5200},
-  {text: "I'm here to honour you", delay: 1100},
-  {text: "If I lose everything in the fire", delay: 2500},
-  {text: "I'm sendin' all my love to you.", delay: 10000},
+// ---------- Fireflies (animated background) ----------
+const fireflyContainer = document.getElementById('fireflies');
+const fireflyCount = 22;
+
+for (let i = 0; i < fireflyCount; i++) {
+  const firefly = document.createElement('span');
+  firefly.className = 'firefly';
+  firefly.style.left = Math.random() * 100 + 'vw';
+  firefly.style.top = Math.random() * 100 + 'vh';
+  firefly.style.animationDuration = (4 + Math.random() * 5) + 's';
+  firefly.style.animationDelay = (Math.random() * 5) + 's';
+  fireflyContainer.appendChild(firefly);
+}
+
+// ---------- Elements ----------
+const frog = document.getElementById('frog');
+const bubble = document.getElementById('bubble');
+const bubbleText = document.getElementById('bubble-text');
+const yesBtn = document.getElementById('yes-btn');
+const noBtn = document.getElementById('no-btn');
+const footerNote = document.getElementById('footer-note');
+const answers = document.getElementById('answers');
+
+const STATE_CLASSES = ['state-worried', 'state-sad', 'state-crying', 'state-joy'];
+
+let isResolved = false;
+let dodgeCount = 0;
+
+const dodgeStages = [
+  { state: 'state-worried', text: 'Are you sure?' },
+  { state: 'state-sad', text: "Please... don't say no." },
+  { state: 'state-crying', text: "I'll be really sad, Ysabella..." }
 ];
 
-const disc      = document.getElementById('disc');
-const tonearm   = document.getElementById('tonearm');
-const lyricEl   = document.getElementById('lyricLine');
-const dotsWrap  = document.getElementById('dots');
-const playBtn   = document.getElementById('playBtn');
-const resetBtn  = document.getElementById('resetBtn');
+function setFrogState(state) {
+  frog.classList.remove(...STATE_CLASSES);
+  if (state) frog.classList.add(state);
+}
 
-let running = false;
-let cancelled = false;
+function setBubble(text) {
+  bubbleText.textContent = text;
+  bubble.classList.remove('shake');
+  // trigger reflow so the shake animation can replay
+  void bubble.offsetWidth;
+  bubble.classList.add('shake');
+}
 
-LYRICS.forEach((_, i) => {
-  const d = document.createElement('span');
-  d.dataset.i = i;
-  dotsWrap.appendChild(d);
+// ---------- No button dodges away on hover/touch ----------
+function moveNoButton() {
+  const containerRect = answers.getBoundingClientRect();
+  const btnRect = noBtn.getBoundingClientRect();
+
+  const maxX = Math.max(containerRect.width - btnRect.width, 0);
+  const maxY = Math.max(containerRect.height - btnRect.height, 0);
+
+  const randX = Math.random() * maxX - maxX / 2;
+  const randY = Math.random() * maxY - maxY / 2;
+
+  noBtn.style.position = 'relative';
+  noBtn.style.transform = `translate(${randX}px, ${randY}px)`;
+}
+
+function handleNoInteraction(e) {
+  if (isResolved) return;
+  if (e) e.preventDefault();
+
+  const stage = dodgeStages[Math.min(dodgeCount, dodgeStages.length - 1)];
+  setFrogState(stage.state);
+  setBubble(stage.text);
+  moveNoButton();
+  dodgeCount++;
+}
+
+noBtn.addEventListener('mouseenter', handleNoInteraction);
+noBtn.addEventListener('touchstart', handleNoInteraction);
+
+yesBtn.addEventListener('click', () => {
+  isResolved = true;
+  setFrogState('state-joy');
+  setBubble("I love you too, Ysabella!");
+  footerNote.textContent = "the frog is proud of you 🐸💚";
+  footerNote.classList.add('visible');
+
+  noBtn.style.transition = 'opacity 0.4s ease';
+  noBtn.style.opacity = '0';
+  noBtn.style.pointerEvents = 'none';
 });
-const dotEls = [...dotsWrap.children];
-
-function setActiveDot(i){
-  dotEls.forEach((d, idx) => d.classList.toggle('active', idx === i));
-}
-
-function typeLine(text, speed = 90){
-  return new Promise(resolve => {
-    lyricEl.innerHTML = '<span class="cursor"></span>';
-    let i = 0;
-    const cursor = lyricEl.querySelector('.cursor');
-    const interval = setInterval(() => {
-      if (cancelled){ clearInterval(interval); resolve(); return; }
-      if (i >= text.length){
-        clearInterval(interval);
-        resolve();
-        return;
-      }
-      const ch = document.createTextNode(text[i]);
-      lyricEl.insertBefore(ch, cursor);
-      i++;
-    }, speed);
-  });
-}
-
-function wait(ms){
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function play(){
-  if (running) return;
-  running = true;
-  cancelled = false;
-  playBtn.disabled = true;
-  playBtn.textContent = '♪ Playing…';
-
-  tonearm.classList.add('dropped');
-  await wait(500);
-
-  for (let i = 0; i < LYRICS.length; i++){
-    if (cancelled) break;
-    setActiveDot(i);
-    const line = LYRICS[i];
-    await typeLine(line.text);
-    await wait(line.delay);
-  }
-
-  if (!cancelled){
-    playBtn.disabled = false;
-    playBtn.textContent = '▶ Play again';
-  }
-  running = false;
-}
-
-function reset(){
-  cancelled = true;
-  running = false;
-  tonearm.classList.remove('dropped');
-  lyricEl.innerHTML = '<span class="cursor"></span>';
-  setActiveDot(-1);
-  playBtn.disabled = false;
-  playBtn.textContent = '▶ Drop the needle';
-}
-
-playBtn.addEventListener('click', play);
-resetBtn.addEventListener('click', reset);
-
-
