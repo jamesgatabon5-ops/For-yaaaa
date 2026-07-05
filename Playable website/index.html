@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do you love me?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-blobs" aria-hidden="true"></div>
+  <div class="fireflies" id="fireflies" aria-hidden="true"></div>
+
+  <main class="stage">
+
+    <div class="bubble" id="bubble">
+      <span id="bubble-text">Do you love me, Ysabella?</span>
+    </div>
+
+    <!-- Frog character -->
+    <svg id="frog" class="frog" viewBox="0 0 260 226" xmlns="http://www.w3.org/2000/svg">
+
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#c8f0a8"/>
+          <stop offset="45%" stop-color="#4caf50"/>
+          <stop offset="100%" stop-color="#245e28"/>
+        </linearGradient>
+        <linearGradient id="goldGradBelly" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f3fbe8"/>
+          <stop offset="100%" stop-color="#d7ecb8"/>
+        </linearGradient>
+        <radialGradient id="padGrad" cx="35%" cy="30%" r="80%">
+          <stop offset="0%" stop-color="#3f8f4a"/>
+          <stop offset="100%" stop-color="#1f5c2c"/>
+        </radialGradient>
+      </defs>
+
+      <!-- soft shadow under the pad -->
+      <ellipse cx="130" cy="216" rx="105" ry="8" fill="rgba(0,0,0,0.2)"/>
+
+      <!-- lily pad -->
+      <path d="M 130 205
+               C 60 205, 15 188, 15 200
+               C 15 214, 65 220, 130 220
+               C 195 220, 245 214, 245 200
+               C 245 188, 200 205, 130 205 Z" fill="url(#padGrad)"/>
+      <path d="M 130 205 L 150 197" stroke="#164a20" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+      <!-- stubby feet peeking out from the sides, resting on the pad -->
+      <ellipse cx="55" cy="192" rx="19" ry="12" class="frog-body-color"/>
+      <ellipse cx="205" cy="192" rx="19" ry="12" class="frog-body-color"/>
+      <ellipse cx="63" cy="194" rx="8" ry="5" class="frog-belly-color"/>
+      <ellipse cx="197" cy="194" rx="8" ry="5" class="frog-belly-color"/>
+
+      <!-- chubby round body/head, all in one -->
+      <ellipse cx="130" cy="120" rx="98" ry="80" class="frog-body-color"/>
+
+      <!-- soft belly patch -->
+      <ellipse cx="130" cy="155" rx="50" ry="30" class="frog-belly-color" opacity="0.55"/>
+
+      <!-- little paws resting on either side of the mug -->
+      <ellipse cx="98" cy="180" rx="14" ry="18" class="frog-body-color"/>
+      <ellipse cx="162" cy="180" rx="14" ry="18" class="frog-body-color"/>
+      <ellipse cx="98" cy="185" rx="6" ry="8" class="frog-belly-color" opacity="0.7"/>
+      <ellipse cx="162" cy="185" rx="6" ry="8" class="frog-belly-color" opacity="0.7"/>
+
+      <!-- steam wisps -->
+      <path d="M 118 155 Q 113 146 118 138 Q 123 130 118 122" class="steam"/>
+      <path d="M 142 155 Q 137 146 142 138 Q 147 130 142 122" class="steam"/>
+
+      <!-- mug shadow -->
+      <ellipse cx="130" cy="199" rx="24" ry="4" fill="rgba(0,0,0,0.18)"/>
+
+      <!-- mug -->
+      <rect x="109" y="167" width="42" height="32" rx="7" class="mug-body"/>
+      <path d="M 151 174 q 15 3 15 11 q 0 8 -15 11" class="mug-handle"/>
+      <rect x="109" y="167" width="42" height="7" rx="3.5" class="mug-rim"/>
+
+      <!-- polka dots on the mug -->
+      <circle cx="118" cy="182" r="3" class="mug-dot"/>
+      <circle cx="132" cy="188" r="2.6" class="mug-dot"/>
+      <circle cx="143" cy="180" r="3" class="mug-dot"/>
+      <circle cx="122" cy="192" r="2.4" class="mug-dot"/>
+      <circle cx="140" cy="192" r="2.6" class="mug-dot"/>
+
+      <!-- eyes: bigger, sparklier, more kawaii -->
+      <g id="pupil-left">
+        <circle cx="90" cy="82" r="13" fill="#10182b"/>
+        <circle cx="95" cy="76" r="4" fill="#fff"/>
+        <circle cx="86" cy="88" r="2" fill="#fff" opacity="0.7"/>
+      </g>
+      <g id="pupil-right">
+        <circle cx="172" cy="76" r="13" fill="#10182b"/>
+        <circle cx="177" cy="70" r="4" fill="#fff"/>
+        <circle cx="168" cy="82" r="2" fill="#fff" opacity="0.7"/>
+      </g>
+
+      <!-- eyebrows (hidden until worried) -->
+      <path id="brow-left" d="M 70 56 Q 90 45 112 57" class="brow" />
+      <path id="brow-right" d="M 150 50 Q 172 39 192 53" class="brow" />
+
+      <!-- blush: always visible -->
+      <ellipse cx="52" cy="108" rx="18" ry="11" class="blush" />
+      <ellipse cx="210" cy="102" rx="18" ry="11" class="blush" />
+
+      <!-- mouths -->
+      <path id="mouth-happy" class="mouth-line" d="M 106 118 Q 130 128 154 116" />
+      <path id="mouth-worried" class="mouth-line" d="M 111 119 L 147 118" />
+      <path id="mouth-sad" class="mouth-line" d="M 108 126 Q 130 114 152 126" />
+      <path id="mouth-joy" class="mouth" d="M 100 114 Q 130 142 160 114 Q 130 130 100 114 Z" />
+
+      <!-- tears -->
+      <g id="tear-left" class="tear">
+        <path d="M 80 100 Q 74 114 80 120 Q 86 114 80 100 Z" fill="#6fb8e6"/>
+      </g>
+      <g id="tear-right" class="tear">
+        <path d="M 180 94 Q 174 108 180 114 Q 186 108 180 94 Z" fill="#6fb8e6"/>
+      </g>
+
+      <!-- extra heavy tears -->
+      <g id="tear-left-2" class="tear tear-2">
+        <path d="M 72 104 Q 66 118 72 124 Q 78 118 72 104 Z" fill="#6fb8e6"/>
+      </g>
+      <g id="tear-right-2" class="tear tear-2">
+        <path d="M 188 98 Q 182 112 188 118 Q 194 112 188 98 Z" fill="#6fb8e6"/>
+      </g>
+
+      <!-- sparkle hearts (shown on happy ending) -->
+      <g id="sparkles" class="sparkles">
+        <text x="20" y="60" class="sparkle-heart">♥</text>
+        <text x="222" y="52" class="sparkle-heart">♥</text>
+        <text x="12" y="140" class="sparkle-heart">♥</text>
+        <text x="236" y="145" class="sparkle-heart">♥</text>
+      </g>
+
+    </svg>
+
+    <div class="answers" id="answers">
+      <button class="btn btn-yes" id="yes-btn">Yes</button>
+      <button class="btn btn-no" id="no-btn">No</button>
+    </div>
+
+    <p class="footer-note" id="footer-note"></p>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
